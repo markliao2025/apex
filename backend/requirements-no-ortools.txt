@@ -28,7 +28,7 @@ httpx==0.28.1
 
 # Orbit mechanics
 skyfield==1.45
-sgp4==2.22
+sgp4==2.27
 
 # Constraint solver
 

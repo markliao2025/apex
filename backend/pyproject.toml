@@ -22,7 +22,7 @@ dependencies = [
     "bcrypt==4.0.1",
     "httpx==0.28.1",
     "skyfield==1.45",
-    "sgp4==2.22",
+    "sgp4==2.27",
     "ortools==9.11.4210",
     "langchain==0.3.13",
     "langchain-openai==0.3.7",
