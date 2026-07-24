@@ -1,0 +1,70 @@
+# Reference-only production configuration. See docs/operations/SUPPORT_MATRIX.md.
+name: apex-reference-production
+
+x-api-environment: &api-environment
+  APP_ENV: production
+  DEMO_MODE: "false"
+  CONJUNCTION_DEMO_ENABLED: "false"
+  LLM_PROVIDER: none
+  ALLOW_NETWORK_SEED: "false"
+  POSTGRES_USER: ${POSTGRES_USER:-apex}
+  POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set}
+  POSTGRES_DB: ${POSTGRES_DB:-apex}
+  POSTGRES_HOST: db
+  JWT_SECRET: ${JWT_SECRET:?JWT_SECRET must be set}
+  DEBUG: "false"
+
+services:
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-apex}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set}
+      POSTGRES_DB: ${POSTGRES_DB:-apex}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${POSTGRES_USER:-apex} -d ${POSTGRES_DB:-apex}",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  migrate:
+    image: apex-backend:${API_VERSION:-0.0.1}
+    depends_on:
+      db:
+        condition: service_healthy
+    environment: *api-environment
+    command: ["alembic", "upgrade", "head"]
+    restart: "no"
+
+  api:
+    image: apex-backend:${API_VERSION:-0.0.1}
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    environment: *api-environment
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+    # One process only: Phase 0 BackgroundTasks are not a durable queue.
+    command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health/ready"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  frontend:
+    image: apex-frontend:${FRONTEND_VERSION:-0.0.1}
+    ports:
+      - "80:80"
+    restart: unless-stopped
+
+volumes:
+  pgdata:

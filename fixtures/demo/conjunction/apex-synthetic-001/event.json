@@ -1,0 +1,38 @@
+{
+  "schema_version": "apex.demo.conjunction.v1",
+  "event_id": "APEX-SYNTHETIC-001",
+  "provenance": {
+    "kind": "synthetic",
+    "license": "CC0-1.0",
+    "created_by": "Apex maintainers",
+    "source_url": null
+  },
+  "created_at_utc": "2024-05-31T12:00:00Z",
+  "tca_utc": "2024-06-01T12:00:00Z",
+  "primary": {
+    "catalog_id": "100001",
+    "name": "APEX-DEMO-PRIMARY"
+  },
+  "secondary": {
+    "catalog_id": "100002",
+    "name": "APEX-DEMO-SECONDARY"
+  },
+  "relative_state": {
+    "miss_distance_m": 245.0,
+    "relative_speed_m_s": 14250.0
+  },
+  "risk": {
+    "collision_probability": 0.00012,
+    "source": "provided",
+    "method": "synthetic_demo_value"
+  },
+  "covariance": {
+    "available": false,
+    "reference_frame": null
+  },
+  "limitations": [
+    "Synthetic event",
+    "Pc is supplied by the fixture and is not computed by Apex",
+    "No maneuver trajectory is generated"
+  ]
+}

@@ -1,0 +1,55 @@
+name: Release evidence
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+  id-token: write
+  attestations: write
+
+jobs:
+  source-evidence:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+      - name: Build immutable source artifact
+        env:
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: >-
+          git archive
+          --format=tar.gz
+          --prefix="apex-${RELEASE_TAG}/"
+          --output="apex-${RELEASE_TAG}.tar.gz"
+          HEAD
+      - name: Generate SPDX SBOM
+        uses: anchore/sbom-action@v0
+        with:
+          path: .
+          format: spdx-json
+          output-file: apex-${{ github.event.release.tag_name }}.spdx.json
+          upload-artifact: false
+          upload-release-assets: false
+      - name: Attest source artifact and SBOM
+        uses: actions/attest@v4
+        with:
+          subject-path: apex-${{ github.event.release.tag_name }}.tar.gz
+          sbom-path: apex-${{ github.event.release.tag_name }}.spdx.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: apex-${{ github.event.release.tag_name }}-evidence
+          path: |
+            apex-${{ github.event.release.tag_name }}.tar.gz
+            apex-${{ github.event.release.tag_name }}.spdx.json
+          if-no-files-found: error
+      - name: Attach artifacts to the published release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: >-
+          gh release upload "${RELEASE_TAG}"
+          "apex-${RELEASE_TAG}.tar.gz"
+          "apex-${RELEASE_TAG}.spdx.json"
+          --clobber

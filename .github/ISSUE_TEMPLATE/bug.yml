@@ -1,0 +1,49 @@
+name: Bug report
+description: Report a reproducible setup, replay, planning, or export problem.
+title: "[Bug]: "
+labels: ["bug", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Do not attach credentials, restricted CDMs, or operational source data.
+  - type: input
+    id: version
+    attributes:
+      label: Apex version or commit
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Quickstart / Compose
+        - Authentication
+        - Constellation management
+        - Planning
+        - Synthetic replay
+        - Planning impact
+        - Evidence export
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Reproduction steps
+      description: Include the exact command and typed error code when available.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected and actual result
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: OS, architecture, Docker/Compose versions, browser.
+    validations:
+      required: true

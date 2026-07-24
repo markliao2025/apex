@@ -1,0 +1,47 @@
+name: Workflow feedback
+description: Share evidence from a synthetic/public/shareable event workflow.
+title: "[Workflow]: "
+labels: ["validation", "user-feedback"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please use only synthetic, public, or explicitly shareable information.
+        Do not paste operational CDMs, credentials, personal data, or restricted
+        source records.
+  - type: dropdown
+    id: completed
+    attributes:
+      label: Furthest completed step
+      options:
+        - Could not start the demo
+        - Demo session started
+        - Replay completed
+        - Planning impact completed
+        - Evidence exported
+    validations:
+      required: true
+  - type: textarea
+    id: decision
+    attributes:
+      label: What decision were you trying to support?
+    validations:
+      required: true
+  - type: textarea
+    id: missing
+    attributes:
+      label: Which missing or unclear information blocked trust?
+    validations:
+      required: true
+  - type: textarea
+    id: explanation
+    attributes:
+      label: In your words, where did Pc come from and what did covariance change?
+    validations:
+      required: true
+  - type: textarea
+    id: remove
+    attributes:
+      label: What should we remove or simplify first?
+    validations:
+      required: true

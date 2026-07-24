@@ -1,0 +1,84 @@
+name: apex-phase0-demo
+
+x-api-environment: &api-environment
+  APP_ENV: demo
+  DEMO_MODE: "true"
+  CONJUNCTION_DEMO_ENABLED: "true"
+  LLM_PROVIDER: none
+  ALLOW_NETWORK_SEED: "false"
+  DATABASE_URL: postgresql://apex:apex-demo-db-local-only@db:5432/apex
+  POSTGRES_USER: apex
+  POSTGRES_PASSWORD: apex-demo-db-local-only
+  POSTGRES_DB: apex
+  POSTGRES_HOST: db
+  JWT_SECRET: apex-demo-only-change-me
+
+services:
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: apex
+      POSTGRES_PASSWORD: apex-demo-db-local-only
+      POSTGRES_DB: apex
+    volumes:
+      - demo_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U apex -d apex"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  bootstrap:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    depends_on:
+      db:
+        condition: service_healthy
+    environment: *api-environment
+    command:
+      - /bin/sh
+      - -c
+      - alembic upgrade head && python -m app.scripts.bootstrap_demo
+    restart: "no"
+
+  api:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    depends_on:
+      bootstrap:
+        condition: service_completed_successfully
+    environment: *api-environment
+    ports:
+      - "8000:8000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health/ready"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_BASE_URL: http://localhost:8000
+    depends_on:
+      api:
+        condition: service_healthy
+    ports:
+      - "5173:80"
+
+  redis:
+    image: redis:7-alpine
+    profiles: ["optional"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  demo_pgdata:
+    name: apex_phase0_demo_pgdata

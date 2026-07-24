@@ -1,0 +1,15 @@
+.git
+.github
+.env
+outputs
+**/.venv
+**/node_modules
+**/dist
+**/htmlcov
+**/__pycache__
+**/.pytest_cache
+**/.mypy_cache
+**/.ruff_cache
+**/*.pyc
+**/*.tsbuildinfo
+backend/de421.bsp

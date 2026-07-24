@@ -1,0 +1,78 @@
+name: Independent demo run
+description: Record a self-serve Quickstart and synthetic replay attempt.
+title: "[Demo run]: "
+labels: ["validation", "demo-run"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This form is public. Do not include credentials, restricted CDMs,
+        operational source data, private logs, names, email addresses, or
+        internal organization details.
+  - type: input
+    id: version
+    attributes:
+      label: Tag or commit
+      placeholder: v0.0.1 or full commit SHA
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: OS/version, CPU architecture, Docker/Compose version, and installation method.
+    validations:
+      required: true
+  - type: dropdown
+    id: under_five_minutes
+    attributes:
+      label: Did you reach the replay result within five minutes?
+      options:
+        - "Yes"
+        - "No"
+        - "Did not reach replay"
+    validations:
+      required: true
+  - type: dropdown
+    id: furthest_step
+    attributes:
+      label: Furthest completed step
+      options:
+        - Could not start Compose
+        - API became ready
+        - Demo session started
+        - Replay completed
+        - Planning impact completed
+        - Evidence exported
+    validations:
+      required: true
+  - type: textarea
+    id: blocker
+    attributes:
+      label: Blocked step and typed error code
+      description: Describe the exact command/action. Redact tokens, URLs with credentials, and private paths.
+    validations:
+      required: true
+  - type: textarea
+    id: interpretation
+    attributes:
+      label: In your own words, what were provided Pc, data quality, and planning impact?
+    validations:
+      required: true
+  - type: dropdown
+    id: own_event
+    attributes:
+      label: Would you try a public or synthetic event of your own?
+      options:
+        - "Yes"
+        - "Maybe"
+        - "No"
+    validations:
+      required: true
+  - type: checkboxes
+    id: redaction
+    attributes:
+      label: Public-data confirmation
+      options:
+        - label: I confirm that this issue contains no credential, restricted CDM, personal information, or unredacted private log.
+          required: true

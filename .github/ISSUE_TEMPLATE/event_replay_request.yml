@@ -1,0 +1,55 @@
+name: Public or synthetic event replay request
+description: Propose a legally shareable test vector without uploading operational data.
+title: "[Replay request]: "
+labels: ["validation", "test-vector"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Phase 0 does not accept operational CDMs. Link only to data that is
+        synthetic, public with clear redistribution terms, or yours to share.
+        Do not paste credentials or restricted source records.
+  - type: dropdown
+    id: source_kind
+    attributes:
+      label: Event source category
+      options:
+        - Synthetic event I created
+        - Public event with documented license
+        - Shareable test vector I have rights to contribute
+    validations:
+      required: true
+  - type: input
+    id: source
+    attributes:
+      label: Public source or proposed fixture link
+      description: A public URL only. Do not link to credential-gated or organization-internal systems.
+    validations:
+      required: true
+  - type: textarea
+    id: rights
+    attributes:
+      label: License and redistribution evidence
+      description: State the license/permission and where it can be verified.
+    validations:
+      required: true
+  - type: textarea
+    id: workflow
+    attributes:
+      label: What decision-support workflow should this test?
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected fields and edge case
+      description: For example missing covariance, six-digit catalog ID, or a threshold boundary.
+    validations:
+      required: true
+  - type: checkboxes
+    id: safe_to_share
+    attributes:
+      label: Sharing confirmation
+      options:
+        - label: I confirm this request contains no operational/restricted CDM, credential, personal data, or confidential source record.
+          required: true
