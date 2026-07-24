@@ -40,6 +40,7 @@ class Settings(BaseSettings):
     # API base URLs
     API_BASE_URL: str = "http://localhost:8000"
     VITE_API_BASE_URL: str = "http://localhost:8000"
+    CORS_ALLOWED_ORIGINS: str = "http://localhost:5173,http://127.0.0.1:5173"
 
     # App
     APP_NAME: str = "Apex"
@@ -77,6 +78,15 @@ class Settings(BaseSettings):
                     "Unsafe production configuration: " + "; ".join(unsafe)
                 )
         return self
+
+    @property
+    def cors_allowed_origins(self) -> list[str]:
+        """Return the explicitly configured browser origins."""
+        return [
+            origin.strip()
+            for origin in self.CORS_ALLOWED_ORIGINS.split(",")
+            if origin.strip()
+        ]
 
 
 @lru_cache

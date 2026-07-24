@@ -4,6 +4,7 @@ Registers routers, lifecycle events, and provides the ``/health`` endpoint.
 """
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from sqlalchemy import text
 
@@ -27,6 +28,14 @@ app = FastAPI(
     version="0.0.1",
     docs_url="/docs",
     redoc_url="/redoc",
+)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.cors_allowed_origins,
+    allow_credentials=False,
+    allow_methods=["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
+    allow_headers=["Accept", "Authorization", "Content-Type", "X-Trace-ID"],
+    expose_headers=["Deprecation", "X-Trace-ID"],
 )
 install_error_handlers(app)
 

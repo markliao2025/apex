@@ -121,6 +121,10 @@ describe("DemoReplayPage", () => {
       </QueryClientProvider>,
     );
 
+    expect(await screen.findByLabelText("Constellation")).toBeInTheDocument();
+    expect(
+      screen.getByLabelText("Hypothetically unavailable satellite"),
+    ).toBeInTheDocument();
     fireEvent.click(
       screen.getByRole("button", { name: /run deterministic replay/i }),
     );

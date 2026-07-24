@@ -89,7 +89,7 @@ make test           # 后端 + 前端非浏览器测试；默认不访问公网
 make lint           # Ruff + ESLint
 make typecheck      # Mypy + TypeScript
 make verify         # lint + typecheck + tests + build + fixture golden hash
-make test-e2e       # 对已启动的 demo 运行 session→replay→impact 旅程
+make test-e2e       # 对已启动的 demo 运行 API + Playwright 最小用户旅程
 make audit-licenses # 检查直接依赖的开源许可证政策
 make release-check  # verify + 开源/发布边界检查
 ```

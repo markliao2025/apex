@@ -100,3 +100,45 @@ jobs:
         run: python scripts/e2e_demo.py
       - if: always()
         run: docker compose down --volumes
+
+  browser-e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Install frontend and Chromium
+        run: |
+          npm ci --prefix frontend
+          npx --prefix frontend playwright install --with-deps chromium
+      - name: Start the zero-configuration demo
+        run: docker compose up --build --detach
+      - name: Wait for API and frontend
+        run: |
+          for attempt in $(seq 1 60); do
+            if curl --fail --silent http://localhost:8000/health/ready >/dev/null \
+              && curl --fail --silent http://localhost:5173/ >/dev/null; then
+              exit 0
+            fi
+            sleep 5
+          done
+          docker compose ps
+          docker compose logs
+          exit 1
+      - name: Run the Playwright demo journey
+        run: npm --prefix frontend run test:e2e
+      - if: failure()
+        uses: actions/upload-artifact@v6
+        with:
+          name: playwright-artifacts
+          path: |
+            frontend/test-results
+            frontend/playwright-report
+          if-no-files-found: ignore
+          retention-days: 7
+      - if: always()
+        run: docker compose down --volumes

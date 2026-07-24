@@ -100,10 +100,14 @@ export default function DemoReplayPage() {
         </StepCard>
 
         <StepCard number="2" title="Apply a what-if window" active={Boolean(replay.data) && !impact.data}>
-          <label className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+          <label
+            htmlFor="demo-constellation"
+            className="text-xs font-semibold uppercase tracking-wide text-slate-500"
+          >
             Constellation
           </label>
           <select
+            id="demo-constellation"
             value={constellationId}
             onChange={(event) => {
               setConstellationId(event.target.value);
@@ -117,10 +121,14 @@ export default function DemoReplayPage() {
               </option>
             ))}
           </select>
-          <label className="mt-3 block text-xs font-semibold uppercase tracking-wide text-slate-500">
+          <label
+            htmlFor="demo-satellite"
+            className="mt-3 block text-xs font-semibold uppercase tracking-wide text-slate-500"
+          >
             Hypothetically unavailable satellite
           </label>
           <select
+            id="demo-satellite"
             value={satelliteId}
             onChange={(event) => setSatelliteId(event.target.value)}
             className="mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-600 dark:bg-slate-900"

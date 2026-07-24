@@ -6,13 +6,15 @@ import PlanningPage from "./pages/PlanningPage";
 import ConstellationsPage from "./pages/ConstellationsPage";
 import DemoReplayPage from "./pages/DemoReplayPage";
 import Layout from "./components/Layout";
+import { authApi } from "./lib/api";
 
 function App() {
   const { isAuthenticated, fetchUser } = useAuthStore();
 
   useEffect(() => {
-    // Check if user is still authenticated on app load
-    fetchUser();
+    if (authApi.hasStoredSession()) {
+      void fetchUser();
+    }
   }, [fetchUser]);
 
   return (

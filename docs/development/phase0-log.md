@@ -18,8 +18,8 @@ repository's CC0 synthetic event and treats its Pc as input-provided.
 | P0-00 to P0-07 | Local complete | Baseline, repository boundary, OSS policy, deterministic tests, replan, seed/time, truthful errors, and tenancy are implemented and locally verified. |
 | P0-08 | Implemented; Docker acceptance pending | Zero-configuration Compose path exists, but Docker is not installed on this workstation. |
 | P0-09 to P0-10 | Local complete | Synthetic replay, evidence, hypothetical unavailable window, stable planning diff, and semantic hash are verified. |
-| P0-11 | Implemented; browser acceptance pending | User flow and component tests pass; manual keyboard/responsive/browser checks are still required. |
-| P0-12 | Partially accepted | CI, API E2E, migrations, security scan, license scan, SBOM, and attestation workflows exist. Playwright and actual GitHub/architecture runs remain pending. |
+| P0-11 | Local complete | Keyboard, responsive, safety-copy, evidence-export, and clean-console browser acceptance pass in local Chrome. |
+| P0-12 | Local implementation complete; hosted acceptance pending | CI, API/Playwright E2E, migrations, security scan, license scan, SBOM, and attestation workflows exist. Actual GitHub, Docker, and architecture-matrix runs remain pending. |
 | P0-13 | Local complete; GitHub setup pending | Build-in-public forms, roadmap, metrics, and evidence ledger exist. Discussions and repository URLs need the public remote. |
 | P0-14 | Release-candidate preparation only | No public remote, tag, GitHub Release, SBOM artifact, or attestation has been produced. |
 | P0-15 | Not started | Requires P0-14 plus six full calendar weeks and independent-user evidence. |
@@ -27,13 +27,20 @@ repository's CC0 synthetic event and treats its Pc as input-provided.
 ## Verification snapshot
 
 - `make verify` passed three consecutive times on 2026-07-24.
-- Each run: Ruff passed; ESLint passed; Mypy passed for 57 source files;
-  TypeScript passed; 96 backend tests passed in about 28 seconds; 6 frontend
-  tests passed; frontend production build passed.
+- Current gate: Ruff and ESLint pass; Mypy passes for 57 source files;
+  application and E2E TypeScript pass; 98 backend tests and 11 frontend tests
+  pass; the frontend production build passes.
+- The committed Playwright Chromium journey passes in Google Chrome
+  150.0.7871.184 on macOS 26.5.2 arm64. It covers keyboard-only Demo entry,
+  replay, provided-Pc and missing-covariance explanation, planning impact,
+  JSON/Markdown export contents, clean console/network, and 375/768/1440-pixel
+  widths without horizontal overflow.
 - Backend line coverage: 78%.
 - Synthetic fixture SHA-256:
   `a45d60780bbf80e7ef56b528358136747eb4755de362daf37a9d7bff78dce188`.
-- `make audit-licenses`: 63 installed direct Python/Node packages accepted.
+- `make audit-licenses`: 64 installed direct Python/Node packages are accepted.
+- `npm audit` and `npm audit --omit=dev` report zero known vulnerabilities after
+  updating Axios, React Router, Vitest, and affected transitive packages.
 - Workflow, Issue-form, and Compose YAML files passed local syntax parsing.
 - `npm ci --dry-run --offline` accepted the lockfile and identified only the two
   intentionally removed React-Leaflet packages.
@@ -221,39 +228,52 @@ repository's CC0 synthetic event and treats its Pc as input-provided.
 
 ## P0-11 — User-centered frontend
 
-- Status: implementation and component tests complete; manual browser acceptance
-  pending.
+- Status: local complete, including browser acceptance.
 - Changed files: demo replay page, constellation page, planner constellation
-  selection, login demo entry, API/types/tests.
-- Commands run: ESLint, TypeScript, 6 Vitest tests, production build.
+  selection, login demo entry, responsive layout, API/types/tests.
+- Commands run: ESLint, TypeScript, 11 Vitest tests, production build, local
+  Playwright Chromium journey, and visual inspection of generated desktop,
+  tablet, and mobile screenshots.
 - Result: the UI leads with a synthetic/non-operational warning, separately
   explains provided Pc and degraded quality, shows before/after planning impact,
-  displays evidence hashes, and offers JSON/Markdown export and feedback.
+  displays evidence hashes, and offers JSON/Markdown export and feedback. The
+  anonymous auth probe/reload loop, missing local CORS policy, narrow email
+  field, unnamed password control, unassociated labels, and mobile header
+  overflow found during browser acceptance are fixed.
 - Acceptance evidence: login-to-demo, replay safety, impact, replan payload,
-  auth store, and protected-route tests pass.
-- Known limitations: keyboard-only, WCAG contrast, and 375/768/1440 pixel
-  browser checks have not been manually observed.
-- Next unblocked tasks: Playwright/manual browser run in P0-12.
+  auth store, protected-route, responsive navigation, and selector-label tests
+  pass. A keyboard-only user can activate Demo with Enter; both evidence formats
+  contain the not-flight-certified, no-maneuver, provided/not-computed, and hash
+  statements; console errors and request failures are empty; 375, 768, and 1440
+  pixel widths do not overflow.
+- Known limitations: this local run does not substitute for independent-user
+  comprehension evidence or the hosted Linux browser job.
+- Next unblocked tasks: run the committed browser job on GitHub.
 
 ## P0-12 — CI, E2E, and supply chain
 
-- Status: workflows implemented; hosted and browser acceptance incomplete.
+- Status: local implementation and browser acceptance complete; hosted
+  acceptance incomplete.
 - Changed files: CI/security/release workflows, Dependabot, API E2E script,
-  license and release checkers.
+  Playwright configuration/journey, license and release checkers.
 - Commands run: local workflow YAML parse, `make verify`,
-  `make audit-licenses`, lockfile offline dry run.
+  `make audit-licenses`, lockfile offline dry run, Playwright against a live
+  local demo, and npm production/full advisory audits.
 - Result: separate lint/type/unit/build, PostgreSQL migration,
-  Compose smoke, source-boundary, secret scan, dependency review, license
-  inventory, SPDX SBOM, source archive, and provenance-attestation jobs are
-  defined with timeouts.
+  Compose smoke, Playwright browser journey, source-boundary, secret scan,
+  dependency review, npm advisory, license inventory, SPDX SBOM, source archive,
+  and provenance-attestation jobs are defined with timeouts.
 - Acceptance evidence: local checks pass. The API E2E script covers
-  status/session/replay/impact/export against a live demo when available.
+  status/session/replay/impact/export against a live demo; the Playwright spec
+  covers keyboard entry, safety semantics, constellation scope, replay, impact,
+  both exports, console/network failures, and responsive overflow.
 - Known limitations: GitHub jobs have not run because no remote exists.
-  Playwright browser dependencies could not be installed in this environment,
-  so no browser spec is claimed. amd64 CI, real arm64, and WSL2 results are
-  pending. Generated SBOM/attestation files do not exist until a Release runs.
+  Docker is unavailable locally, so Compose, PostgreSQL migration, and Linux
+  Chromium jobs remain unobserved here. amd64 CI and WSL2 results are pending;
+  local real arm64 browser evidence is recorded above. Generated
+  SBOM/attestation files do not exist until a Release runs.
 - Next unblocked tasks: create/authorize the public remote, run CI, approve
-  Playwright dependency installation, and record architecture results.
+  repository settings, and record Docker/architecture results.
 
 ## P0-13 — Build in Public infrastructure
 

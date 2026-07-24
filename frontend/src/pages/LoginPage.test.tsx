@@ -18,6 +18,20 @@ vi.mock("../stores/authStore", () => ({
 }));
 
 describe("LoginPage", () => {
+  it("exposes labelled, full-width login controls", () => {
+    render(
+      <MemoryRouter initialEntries={["/login"]}>
+        <LoginPage />
+      </MemoryRouter>,
+    );
+
+    expect(screen.getByLabelText("Email")).toHaveClass("w-full");
+    expect(screen.getByLabelText("Password")).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Show password" }),
+    ).toBeInTheDocument();
+  });
+
   it("offers a no-account synthetic demo with a safety warning", async () => {
     render(
       <MemoryRouter initialEntries={["/login"]}>

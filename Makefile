@@ -7,7 +7,8 @@ MYPY := $(BACKEND_BIN)/mypy
 DEMO_VOLUME := apex_phase0_demo_pgdata
 
 .PHONY: help demo dev down logs verify test test-backend test-frontend \
-	lint typecheck test-e2e audit-licenses reset-demo release-check migrate seed
+	lint typecheck test-e2e test-e2e-api test-e2e-browser audit-licenses \
+	reset-demo release-check migrate seed
 
 help: ## Show supported commands
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z0-9_-]+:.*?## / {printf "  %-18s %s\n", $$1, $$2}' $(MAKEFILE_LIST)
@@ -37,14 +38,19 @@ lint: ## Run backend and frontend linters
 
 typecheck: ## Run Python and TypeScript type checks
 	cd backend && ./.venv/bin/mypy app
-	cd frontend && npx tsc -b
+	cd frontend && npm run typecheck
 
 verify: lint typecheck test ## Run the local release quality gate
 	cd frontend && npm run build
 	$(BACKEND_BIN)/python scripts/verify_fixture.py
 
-test-e2e: ## Run the live session-to-impact journey against a running demo
+test-e2e: test-e2e-api test-e2e-browser ## Run live API and browser journeys against a running demo
+
+test-e2e-api: ## Run the live session-to-impact API journey
 	$(BACKEND_BIN)/python scripts/e2e_demo.py
+
+test-e2e-browser: ## Run the keyboard, export, and responsive browser journey
+	cd frontend && npm run test:e2e
 
 audit-licenses: ## Enforce the direct-dependency open-source license policy
 	$(BACKEND_BIN)/python scripts/audit_licenses.py

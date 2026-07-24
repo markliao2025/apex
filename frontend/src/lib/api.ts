@@ -37,6 +37,14 @@ function getRefreshToken(): string | null {
   }
 }
 
+export function shouldAttemptTokenRefresh(
+  status: number | undefined,
+  alreadyRetried: boolean | undefined,
+  refreshToken: string | null,
+): boolean {
+  return status === 401 && !alreadyRetried && Boolean(refreshToken);
+}
+
 api.interceptors.request.use((config) => {
   const token = getAccessToken();
   if (token) {
@@ -57,10 +65,7 @@ function addRefreshSubscriber(cb: (token: string) => void) {
   refreshSubscribers.push(cb);
 }
 
-async function refreshToken(): Promise<string> {
-  const refresh = getRefreshToken();
-  if (!refresh) throw new Error("No refresh token");
-
+async function refreshToken(refresh: string): Promise<string> {
   const response = await axios.post<TokenPair>(
     `${API_BASE}/api/v1/auth/refresh`,
     { refresh_token: refresh }
@@ -74,8 +79,15 @@ api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
+    const storedRefreshToken = getRefreshToken();
 
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    if (
+      shouldAttemptTokenRefresh(
+        error.response?.status,
+        originalRequest._retry,
+        storedRefreshToken,
+      )
+    ) {
       if (isRefreshing) {
         return new Promise((resolve) => {
           addRefreshSubscriber((newToken: string) => {
@@ -89,7 +101,7 @@ api.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        const newToken = await refreshToken();
+        const newToken = await refreshToken(storedRefreshToken!);
         onRefreshed(newToken);
         originalRequest.headers.Authorization = `Bearer ${newToken}`;
         return api(originalRequest);
@@ -97,7 +109,9 @@ api.interceptors.response.use(
         // Clear auth state on refresh failure
         localStorage.removeItem("access_token");
         localStorage.removeItem("refresh_token");
-        window.location.href = "/login";
+        if (window.location.pathname !== "/login") {
+          window.location.href = "/login";
+        }
         return Promise.reject(error);
       } finally {
         isRefreshing = false;
@@ -111,6 +125,10 @@ api.interceptors.response.use(
 // ── Auth endpoints ───────────────────────────────────────────────────────────
 
 export const authApi = {
+  hasStoredSession() {
+    return Boolean(getAccessToken());
+  },
+
   async register(email: string, password: string, name?: string) {
     const response = await api.post("/api/v1/auth/register", {
       email,

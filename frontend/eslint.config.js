@@ -20,7 +20,7 @@ export default [
   js.configs.recommended,
   // Browser/TS source files
   {
-    files: ["src/**/*.{ts,tsx}"],
+    files: ["src/**/*.{ts,tsx}", "e2e/**/*.ts"],
     languageOptions: {
       parser: tsParser,
       parserOptions: {
@@ -30,6 +30,7 @@ export default [
       },
       globals: {
         ...globals.browser,
+        ...globals.node,
         ...globals.es2022,
         // vitest globals
         describe: "readonly",
