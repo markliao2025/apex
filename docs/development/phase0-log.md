@@ -301,6 +301,21 @@ repository's CC0 synthetic event and treats its Pc as input-provided.
 - Known limitations: no tag, public GitHub Release, remote CI result, SBOM,
   provenance attestation, Docker quickstart evidence, or independent-user run
   exists yet. Therefore P0-14 is not complete.
+- Pre-publication preflight on 2026-07-24:
+  - The source tree was clean on `main` at `d110b3b`, and `make release-check`
+    passed again: Ruff, ESLint, Mypy, application/E2E TypeScript, 98 backend
+    tests, 11 frontend tests, production build, fixture hash, 64 direct
+    dependency licenses, and the release source boundary all passed.
+  - No Git remote is configured.
+  - GitHub CLI resolves the intended local account as `markliao2025`, but its
+    stored token is invalid. The repository owner must re-authenticate and
+    confirm the final owner/repository name before any public repository is
+    created.
+  - Neither Docker nor Podman is installed or available on this workstation.
+    Clean Compose, PostgreSQL migration, Linux browser, amd64, and WSL2 evidence
+    must therefore come from a Docker-capable host or the hosted GitHub jobs.
+  - No repository, tag, Release, SBOM, attestation, or public evidence-clock
+    entry was created during this preflight.
 - Next unblocked tasks: complete P0-08/P0-11/P0-12 external gates, then publish
   `v0.0.1` with the fixed release template.
 
