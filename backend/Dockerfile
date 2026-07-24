@@ -1,4 +1,4 @@
-FROM python:3.11-slim AS builder
+FROM python:3.14-slim AS builder
 
 WORKDIR /install
 
@@ -15,7 +15,7 @@ RUN pip install --no-cache-dir --upgrade pip && \
 
 # ─── Runtime ────────────────────────────────────────────────────────────────
 
-FROM python:3.11-slim AS runtime
+FROM python:3.14-slim AS runtime
 
 # Non-root user
 RUN groupadd -g 1001 appgroup && \
