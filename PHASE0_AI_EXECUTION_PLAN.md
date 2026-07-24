@@ -1,6 +1,6 @@
 # Apex Phase 0：AI 可执行开发与 Build in Public 验证规范
 
-> 状态：**已批准进入 Phase 0；尚未开始业务代码实现**  
+> 状态：**Phase 0 本地发布候选已实现；Docker、GitHub Release 与六周外部证据 Gate 待完成**  
 > 版本：1.0  
 > 日期：2026-07-23  
 > 上位计划：`SSA_OPEN_SOURCE_PRODUCT_AND_DEVELOPMENT_PLAN.md`  

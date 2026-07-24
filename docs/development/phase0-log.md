@@ -44,7 +44,8 @@ repository's CC0 synthetic event and treats its Pc as input-provided.
 ## P0-00 — Baseline and safety
 
 - Status: local complete.
-- Commit: pending initial signed source commit at the time of this entry.
+- Implementation commit:
+  `7acfe70df7c7f0411e0ba2ff301ca460bf8c0656` (DCO signed).
 - Changed files: `docs/development/BASELINE.md`, this log.
 - Commands run: runtime inventory; backend tests with timeout; Ruff; Mypy;
   ESLint; Vitest; TypeScript build; generated/binary/secret inventory.
@@ -58,11 +59,12 @@ repository's CC0 synthetic event and treats its Pc as input-provided.
 
 ## P0-01 — Git and repository hygiene
 
-- Status: implementation complete; initial signed commit pending.
+- Status: local complete.
 - Changed files: root/backend/frontend ignore files, `.gitattributes`,
   `.editorconfig`, Docker ignore files, `AGENTS.md`.
 - Commands run: `git init -b main`, ignored-file inspection, source-status
-  inspection, targeted secret-pattern scan.
+  inspection, targeted secret-pattern scan, staged-source check, DCO-signed
+  initial commit.
 - Result: caches, environments, build output, coverage, user outputs, real
   `.env`, dependency directories, and the unverified `backend/de421.bsp` are
   outside the public source boundary.
@@ -71,8 +73,7 @@ repository's CC0 synthetic event and treats its Pc as input-provided.
   paths.
 - Known limitations: no remote exists. Repository owner controls public
   organization, name, and visibility.
-- Next unblocked tasks: create the initial DCO-signed local commit; configure a
-  remote only with owner authorization.
+- Next unblocked tasks: configure a remote only with owner authorization.
 
 ## P0-02 — Open-source and legal baseline
 
