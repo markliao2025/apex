@@ -19,7 +19,7 @@ redis==5.2.1
 pydantic==2.10.3
 pydantic-settings==2.7.0
 email-validator==2.3.0
-python-dotenv==1.0.1
+python-dotenv==1.2.2
 PyJWT[crypto]==2.13.0
 passlib[bcrypt]==1.7.4
 bcrypt==4.0.1
