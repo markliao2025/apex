@@ -198,19 +198,21 @@ def upgrade() -> None:
         """
     )
     op.execute(
-        """
-        INSERT INTO constellations
-            (id, organization_id, slug, name, description, is_demo)
-        SELECT
-            md5(id::text || ':default')::uuid,
-            id,
-            'default',
-            'Default constellation',
-            'Created by the Phase 0 tenancy migration.',
-            false
-        FROM users
-        ON CONFLICT DO NOTHING
-        """
+        sa.text(
+            """
+            INSERT INTO constellations
+                (id, organization_id, slug, name, description, is_demo)
+            SELECT
+                md5(id::text || :constellation_suffix)::uuid,
+                id,
+                'default',
+                'Default constellation',
+                'Created by the Phase 0 tenancy migration.',
+                false
+            FROM users
+            ON CONFLICT DO NOTHING
+            """
+        ).bindparams(constellation_suffix=":default")
     )
     # Provenance of legacy requests is not provable, so keep them in the
     # explicitly synthetic/demo scope rather than claiming personal ownership.
