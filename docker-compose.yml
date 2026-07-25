@@ -6,7 +6,7 @@ x-api-environment: &api-environment
   CONJUNCTION_DEMO_ENABLED: "true"
   LLM_PROVIDER: none
   ALLOW_NETWORK_SEED: "false"
-  DATABASE_URL: postgresql://apex:apex-demo-db-local-only@db:5432/apex
+  DATABASE_URL: postgresql://apex:apex-demo-db-local-only@db:5432/apex # trufflehog:ignore
   POSTGRES_USER: apex
   POSTGRES_PASSWORD: apex-demo-db-local-only
   POSTGRES_DB: apex

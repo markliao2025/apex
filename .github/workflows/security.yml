@@ -59,8 +59,7 @@ jobs:
       - name: Enforce direct dependency license policy
         run: make audit-licenses
       - name: Reject high-severity npm advisories
-        working-directory: frontend
-        run: npm audit --audit-level=high
+        run: backend/.venv/bin/python scripts/check_npm_audit.py
       - name: Generate resolved SPDX SBOM
         uses: anchore/sbom-action@v0
         with:

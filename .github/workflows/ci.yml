@@ -51,7 +51,7 @@ jobs:
           --health-timeout 3s
           --health-retries 20
     env:
-      DATABASE_URL: postgresql://apex:migration-test@localhost:5432/apex
+      DATABASE_URL: postgresql://apex:migration-test@localhost:5432/apex # trufflehog:ignore
       APP_ENV: test
       JWT_SECRET: migration-test-secret
     steps:
