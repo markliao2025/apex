@@ -1,6 +1,6 @@
 # Phase 0 execution log
 
-Last updated: 2026-07-24 (Asia/Shanghai)
+Last updated: 2026-07-25 (Asia/Shanghai)
 
 This is the implementation and acceptance source of truth for Phase 0. A task is
 marked **local complete** only when its code and all acceptance checks available on
@@ -16,19 +16,19 @@ repository's CC0 synthetic event and treats its Pc as input-provided.
 | Task | Status | Meaning |
 |---|---|---|
 | P0-00 to P0-07 | Local complete | Baseline, repository boundary, OSS policy, deterministic tests, replan, seed/time, truthful errors, and tenancy are implemented and locally verified. |
-| P0-08 | Implemented; Docker acceptance pending | Zero-configuration Compose path exists, but Docker is not installed on this workstation. |
+| P0-08 | Hosted acceptance complete | The zero-configuration Compose path passed on a clean GitHub-hosted Linux Docker runner; Docker remains unavailable on this workstation. |
 | P0-09 to P0-10 | Local complete | Synthetic replay, evidence, hypothetical unavailable window, stable planning diff, and semantic hash are verified. |
-| P0-11 | Local complete | Keyboard, responsive, safety-copy, evidence-export, and clean-console browser acceptance pass in local Chrome. |
-| P0-12 | Local implementation complete; hosted acceptance pending | CI, API/Playwright E2E, migrations, security scan, license scan, SBOM, and attestation workflows exist. Actual GitHub, Docker, and architecture-matrix runs remain pending. |
-| P0-13 | Local complete; GitHub setup pending | Build-in-public forms, roadmap, metrics, and evidence ledger exist. Discussions and repository URLs need the public remote. |
-| P0-14 | Release-candidate preparation only | No public remote, tag, GitHub Release, SBOM artifact, or attestation has been produced. |
+| P0-11 | Local and hosted complete | Keyboard, responsive, safety-copy, evidence-export, and clean-console browser acceptance pass locally and in hosted Linux Chromium. |
+| P0-12 | Hosted acceptance complete | CI, PostgreSQL migration, Compose/API/Playwright E2E, secret/dependency/license scans, CodeQL, and PR SPDX SBOM generation pass on GitHub. Release attestation remains a P0-14 gate. |
+| P0-13 | Hosted setup complete | Public Issues, Discussions, security reporting, build-in-public forms, roadmap, metrics, and evidence ledger are live; the single-maintainer risk is recorded. |
+| P0-14 | Release-candidate preparation only | The public repository and a green launch PR exist, but no tag, GitHub Release, release attestation, or public evidence-clock start has been produced. |
 | P0-15 | Not started | Requires P0-14 plus six full calendar weeks and independent-user evidence. |
 
 ## Verification snapshot
 
-- `make verify` passed three consecutive times on 2026-07-24.
+- `make verify` passed after the hosted launch fixes on 2026-07-25.
 - Current gate: Ruff and ESLint pass; Mypy passes for 57 source files;
-  application and E2E TypeScript pass; 98 backend tests and 11 frontend tests
+  application and E2E TypeScript pass; 102 backend tests and 11 frontend tests
   pass; the frontend production build passes.
 - The committed Playwright Chromium journey passes in Google Chrome
   150.0.7871.184 on macOS 26.5.2 arm64. It covers keyboard-only Demo entry,
@@ -38,15 +38,20 @@ repository's CC0 synthetic event and treats its Pc as input-provided.
 - Backend line coverage: 78%.
 - Synthetic fixture SHA-256:
   `a45d60780bbf80e7ef56b528358136747eb4755de362daf37a9d7bff78dce188`.
-- `make audit-licenses`: 64 installed direct Python/Node packages are accepted.
-- `npm audit` and `npm audit --omit=dev` report zero known vulnerabilities after
-  updating Axios, React Router, Vitest, and affected transitive packages.
+- `make audit-licenses`: 62 installed direct Python/Node packages are accepted.
+- The npm high/critical policy rejects every unlisted advisory. A temporary
+  exception for `GHSA-qwww-vcr4-c8h2` is limited to `react-router` and
+  `react-router-dom`, documents that Apex has no RSC/server-action/SSR path, and
+  expires on 2026-08-08.
+- GitHub PR checks for commit `f725b7d` passed: verify, PostgreSQL
+  upgrade/downgrade/re-upgrade, Compose/API smoke, Linux Chromium Playwright,
+  dependency review, secret scan, supply-chain/license/npm policy, and Python
+  and JavaScript/TypeScript CodeQL.
+- The passing Security workflow produced a non-empty `apex-sbom` SPDX artifact.
 - Workflow, Issue-form, and Compose YAML files passed local syntax parsing.
-- `npm ci --dry-run --offline` accepted the lockfile and identified only the two
-  intentionally removed React-Leaflet packages.
 - Expected dependency warnings remain: `passlib` uses Python's deprecated
-  `crypt`, `python-jose` internally uses `datetime.utcnow()`, and React Router
-  reports opt-in notices for its future v7 behavior. They do not fail Phase 0.
+  `crypt`, and Starlette warns that its legacy `httpx` TestClient integration
+  will move to `httpx2`. They do not fail Phase 0.
 
 ## P0-00 — Baseline and safety
 
@@ -78,13 +83,14 @@ repository's CC0 synthetic event and treats its Pc as input-provided.
 - Acceptance evidence: `git check-ignore` resolves each protected example to a
   specific ignore rule; the release checker rejects sensitive/generated tracked
   paths.
-- Known limitations: no remote exists. Repository owner controls public
-  organization, name, and visibility.
-- Next unblocked tasks: configure a remote only with owner authorization.
+- Known limitations: the public repository has one maintainer, recorded as a
+  continuity risk.
+- Next unblocked tasks: add a second trusted maintainer before claiming
+  production support.
 
 ## P0-02 — Open-source and legal baseline
 
-- Status: local complete; hosted Community Profile pending.
+- Status: local complete; public repository configuration complete.
 - Changed files: `LICENSE`, `NOTICE`, `CONTRIBUTING.md`,
   `CODE_OF_CONDUCT.md`, `SECURITY.md`, `GOVERNANCE.md`, `CHANGELOG.md`,
   legal policies, license ADR, fixture license/provenance.
@@ -96,9 +102,8 @@ repository's CC0 synthetic event and treats its Pc as input-provided.
 - Acceptance evidence: 63 direct dependency licenses accepted; Hippocratic
   licensed `react-leaflet` was unused and removed; `backend/de421.bsp` is
   excluded because redistribution provenance is not proven.
-- Known limitations: hosted security-contact identity and GitHub private
-  reporting must be set by repository maintainers.
-- Next unblocked tasks: generate the actual SPDX SBOM in GitHub Release CI.
+- Known limitations: the project currently has one maintainer.
+- Next unblocked tasks: publish and attest the release SPDX SBOM in P0-14.
 
 ## P0-03 — Deterministic test completion
 
@@ -163,8 +168,8 @@ repository's CC0 synthetic event and treats its Pc as input-provided.
 
 ## P0-07 — Organization and constellation isolation
 
-- Status: implementation and local authorization tests complete; live
-  PostgreSQL migration pending P0-12 external CI.
+- Status: implementation, authorization tests, and hosted PostgreSQL migration
+  acceptance complete.
 - Changed files: tenancy models/schemas/services/routes, migration `0002`,
   satellite/planning scopes, constellation frontend.
 - Commands run: authorization matrix tests, model tests, stateless parse test,
@@ -173,14 +178,16 @@ repository's CC0 synthetic event and treats its Pc as input-provided.
   demo has a stable isolated constellation; planner and satellite routes require
   scope; owner/operator/viewer behavior and attach idempotency are enforced.
 - Acceptance evidence: cross-tenant, viewer, operator, missing-scope, attach,
-  detach, planner-scope, and non-disclosure tests pass.
-- Known limitations: upgrade/downgrade/re-upgrade against PostgreSQL is defined
-  in CI but not runnable locally without Docker.
-- Next unblocked tasks: run GitHub migration job.
+  detach, planner-scope, and non-disclosure tests pass. GitHub job
+  `postgres-migration` passed upgrade, downgrade to `0001_initial`, and
+  re-upgrade after adding a regression test for the literal `:default` suffix.
+- Known limitations: the live migration was exercised on hosted amd64 Linux,
+  not this Docker-less arm64 workstation.
+- Next unblocked tasks: none for Phase 0.
 
 ## P0-08 — Zero-configuration demo and Compose
 
-- Status: implemented; local Docker acceptance blocked by missing Docker CLI.
+- Status: hosted Docker acceptance complete; local Docker remains unavailable.
 - Changed files: Dockerfiles, Compose files, health checks, config, bootstrap,
   `Makefile`, README.
 - Commands run: Compose/YAML syntax parsing, offline bootstrap tests, API
@@ -188,12 +195,12 @@ repository's CC0 synthetic event and treats its Pc as input-provided.
 - Result: `make demo` requires no `.env`, OpenAI key, or Space-Track account;
   migration/bootstrap gate API start; Redis is optional; demo issues temporary
   tokens; bootstrap is idempotent.
-- Acceptance evidence: configuration/bootstrap/API tests pass and Compose
-  definitions parse.
-- Known limitations: clean-cache five-minute startup, second container start,
-  container health, and migration-failure readiness are not observed locally.
-- Next unblocked tasks: run the exact P0-08 command sequence on Docker Desktop
-  or GitHub Actions.
+- Acceptance evidence: configuration/bootstrap/API tests pass; the GitHub
+  `compose-smoke` job built the images, reached healthy API/frontend, verified
+  demo readiness, and completed the documented live API journey in 83 seconds.
+- Known limitations: second-start timing and WSL2 remain unobserved; hosted
+  clean Linux Docker and local arm64 browser evidence are recorded separately.
+- Next unblocked tasks: collect optional WSL2 portability evidence.
 
 ## P0-09 — Synthetic conjunction replay and evidence
 
@@ -228,7 +235,7 @@ repository's CC0 synthetic event and treats its Pc as input-provided.
 
 ## P0-11 — User-centered frontend
 
-- Status: local complete, including browser acceptance.
+- Status: local and hosted browser acceptance complete.
 - Changed files: demo replay page, constellation page, planner constellation
   selection, login demo entry, responsive layout, API/types/tests.
 - Commands run: ESLint, TypeScript, 11 Vitest tests, production build, local
@@ -246,19 +253,19 @@ repository's CC0 synthetic event and treats its Pc as input-provided.
   contain the not-flight-certified, no-maneuver, provided/not-computed, and hash
   statements; console errors and request failures are empty; 375, 768, and 1440
   pixel widths do not overflow.
-- Known limitations: this local run does not substitute for independent-user
-  comprehension evidence or the hosted Linux browser job.
-- Next unblocked tasks: run the committed browser job on GitHub.
+- Known limitations: maintainer automation does not substitute for
+  independent-user comprehension evidence.
+- Next unblocked tasks: collect public-user evidence after P0-14.
 
 ## P0-12 — CI, E2E, and supply chain
 
-- Status: local implementation and browser acceptance complete; hosted
-  acceptance incomplete.
+- Status: hosted PR acceptance complete.
 - Changed files: CI/security/release workflows, Dependabot, API E2E script,
   Playwright configuration/journey, license and release checkers.
 - Commands run: local workflow YAML parse, `make verify`,
   `make audit-licenses`, lockfile offline dry run, Playwright against a live
-  local demo, and npm production/full advisory audits.
+  local demo, the strict expiring npm advisory policy, and all hosted CI and
+  Security jobs.
 - Result: separate lint/type/unit/build, PostgreSQL migration,
   Compose smoke, Playwright browser journey, source-boundary, secret scan,
   dependency review, npm advisory, license inventory, SPDX SBOM, source archive,
@@ -266,18 +273,16 @@ repository's CC0 synthetic event and treats its Pc as input-provided.
 - Acceptance evidence: local checks pass. The API E2E script covers
   status/session/replay/impact/export against a live demo; the Playwright spec
   covers keyboard entry, safety semantics, constellation scope, replay, impact,
-  both exports, console/network failures, and responsive overflow.
-- Known limitations: GitHub jobs have not run because no remote exists.
-  Docker is unavailable locally, so Compose, PostgreSQL migration, and Linux
-  Chromium jobs remain unobserved here. amd64 CI and WSL2 results are pending;
-  local real arm64 browser evidence is recorded above. Generated
-  SBOM/attestation files do not exist until a Release runs.
-- Next unblocked tasks: create/authorize the public remote, run CI, approve
-  repository settings, and record Docker/architecture results.
+  both exports, console/network failures, and responsive overflow. All required
+  checks passed on PR #21, and the Security workflow uploaded `apex-sbom`.
+- Known limitations: hosted results cover amd64 Linux; WSL2 is pending. The PR
+  SBOM is a retained workflow artifact, not the release artifact or attestation.
+- Next unblocked tasks: land the green PR if needed, then run the P0-14 release
+  workflow.
 
 ## P0-13 — Build in Public infrastructure
 
-- Status: local complete; hosted configuration pending.
+- Status: hosted configuration complete.
 - Changed files: structured Issue forms, PR template, roadmap, metrics, weekly
   template, validation log, evidence ledger, repository setup checklist.
 - Commands run: Issue-form YAML parse and content review.
@@ -285,9 +290,9 @@ repository's CC0 synthetic event and treats its Pc as input-provided.
   restricted CDM, and copied personal information.
 - Acceptance evidence: forms ask for commit/tag, environment, five-minute
   outcome, comprehension, repeat-use intent, and redaction confirmation.
-- Known limitations: placeholder owner/repository URLs and GitHub Discussion
-  categories require the final public remote.
-- Next unblocked tasks: configure the repository checklist after remote creation.
+- Known limitations: one maintainer is a continuity risk; no independent-user
+  evidence exists yet.
+- Next unblocked tasks: use the live Issues and Discussions during P0-14/P0-15.
 
 ## P0-14 — Public v0.0.x release
 
@@ -298,26 +303,27 @@ repository's CC0 synthetic event and treats its Pc as input-provided.
 - Result: a published GitHub Release is configured to create a source archive,
   SPDX SBOM, and artifact attestations, then attach source/SBOM artifacts.
 - Acceptance evidence: configuration and source-boundary unit tests pass.
-- Known limitations: no tag, public GitHub Release, remote CI result, SBOM,
-  provenance attestation, Docker quickstart evidence, or independent-user run
-  exists yet. Therefore P0-14 is not complete.
-- Pre-publication preflight on 2026-07-24:
-  - The source tree was clean on `main` at `d110b3b`, and `make release-check`
-    passed again: Ruff, ESLint, Mypy, application/E2E TypeScript, 98 backend
-    tests, 11 frontend tests, production build, fixture hash, 64 direct
-    dependency licenses, and the release source boundary all passed.
-  - No Git remote is configured.
-  - GitHub CLI resolves the intended local account as `markliao2025`, but its
-    stored token is invalid. The repository owner must re-authenticate and
-    confirm the final owner/repository name before any public repository is
-    created.
-  - Neither Docker nor Podman is installed or available on this workstation.
-    Clean Compose, PostgreSQL migration, Linux browser, amd64, and WSL2 evidence
-    must therefore come from a Docker-capable host or the hosted GitHub jobs.
-  - No repository, tag, Release, SBOM, attestation, or public evidence-clock
-    entry was created during this preflight.
-- Next unblocked tasks: complete P0-08/P0-11/P0-12 external gates, then publish
-  `v0.0.1` with the fixed release template.
+- Known limitations: no tag, public GitHub Release, release provenance
+  attestation, or independent-user run exists yet. Therefore P0-14 is not
+  complete.
+- Public-repository preflight on 2026-07-25:
+  - <https://github.com/markliao2025/apex> is public with Issues, Discussions,
+    private vulnerability reporting, secret scanning/push protection,
+    Dependabot security updates, and read-only default Actions permissions.
+  - PR #21 is mergeable and all 10 observed checks pass, including clean
+    Compose/API startup, PostgreSQL migration, Linux browser E2E, supply-chain
+    policy, secret scanning, dependency review, and CodeQL.
+  - The Security run produced the non-empty `apex-sbom` artifact; release
+    source/SBOM attachments and attestations still require a published tag.
+  - `main` requires PRs and the nine named CI/security contexts, uses strict
+    up-to-date checks and linear history, and disallows force-pushes/deletion.
+    Approval count is zero because the single maintainer cannot independently
+    approve their own PR.
+  - No tag, Release, release attestation, or public evidence-clock entry was
+    created during repository launch.
+- Next unblocked tasks: land PR #21 if needed, then publish `v0.0.1` only
+  through the configured release workflow and start the evidence clock from
+  that date.
 
 ## P0-15 — Six-week market-fit Gate
 

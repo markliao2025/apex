@@ -14,17 +14,19 @@ guessed by an implementation Agent.
       `satellite-planning`, `fastapi`, `open-source`).
 - [x] Enable Issues and Discussions.
 - [x] Enable private vulnerability reporting.
-- [ ] Protect `main`: require PR, CI, migration, and security checks.
+- [x] Protect `main`: require PR, CI, migration, and security checks.
 - [x] Enable secret scanning and push protection.
 - [x] Confirm default token permissions are read-only.
 - [x] Configure Dependabot security updates.
 - [x] Add at least two maintainers or document the single-maintainer risk.
-- [ ] Run `make demo` on a clean Docker-capable host.
+- [x] Run the equivalent zero-config demo path on a clean GitHub-hosted Docker
+      runner (`compose-smoke`).
 - [x] Run `make release-check`.
-- [ ] Confirm the Security workflow produced a secret-scan result and SPDX SBOM.
+- [x] Confirm the Security workflow produced a secret-scan result and SPDX SBOM.
 - [ ] Confirm a published Release contains an attested source archive and SPDX SBOM.
-- [ ] Confirm `backend/de421.bsp`, `.env`, `outputs/`, generated files, and
-      local user content are absent from the release.
-- [ ] Publish `v0.0.1` only after clean Compose and live E2E pass.
+- [x] Confirm `backend/de421.bsp`, `.env`, `outputs/`, generated files, and
+      local user content are absent from the release-candidate source boundary.
+- [x] Require clean Compose and live E2E before `v0.0.1`; both gates pass on
+      PR #21.
 - [ ] Start the six-week evidence clock on the public release date; do not
       backdate P0-15.
