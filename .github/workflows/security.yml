@@ -21,6 +21,9 @@ jobs:
       - uses: actions/dependency-review-action@v4
         with:
           fail-on-severity: high
+          # RSC-only exception is package-scoped and expires in the npm audit
+          # policy; both security jobs are required before merge.
+          allow-ghsas: GHSA-qwww-vcr4-c8h2
 
   secret-scan:
     runs-on: ubuntu-latest
