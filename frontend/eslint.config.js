@@ -66,6 +66,12 @@ export default [
       // The project intentionally uses `any` for partial mock casts
       // in test-utils.
       "@typescript-eslint/no-explicit-any": "off",
+      // React Hooks 7 added opt-in compiler-oriented rules to its recommended
+      // preset. Apex does not use the React Compiler; keep the established
+      // runtime Hooks rules while compiler adoption is evaluated separately.
+      "react-hooks/immutability": "off",
+      "react-hooks/purity": "off",
+      "react-hooks/set-state-in-effect": "off",
       // Allow `_`-prefixed unused vars (used in mock signatures).
       "@typescript-eslint/no-unused-vars": [
         "error",

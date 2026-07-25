@@ -1,9 +1,9 @@
 """Authentication endpoints — register, login, refresh, me."""
 
 import uuid
-from jose import JWTError, jwt
 
 from fastapi import APIRouter, HTTPException, status
+import jwt
 
 from app.api.dependencies import CurrentUser, DbSession
 from app.core.security import (
@@ -120,7 +120,7 @@ async def refresh(body: dict, db: DbSession) -> TokenPair:
         if payload.get("type") != "refresh":
             raise HTTPException(status_code=401, detail="Invalid token type")
         user_id_str: str | None = payload.get("sub")
-    except JWTError as exc:
+    except jwt.InvalidTokenError as exc:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid refresh token",

@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "exceptions": [
+    {
+      "advisory": "GHSA-qwww-vcr4-c8h2",
+      "packages": [
+        "react-router",
+        "react-router-dom"
+      ],
+      "expires": "2026-08-08",
+      "reason": "Apex is a Vite BrowserRouter SPA and does not enable React Server Components, server actions, SSR, or React Router framework mode. Remove this exception as soon as a patched React Router release is available."
+    }
+  ]
+}

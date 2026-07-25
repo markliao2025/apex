@@ -3,13 +3,13 @@
 # =============================================================================
 
 # Core web framework
-fastapi==0.115.6
+fastapi==0.140.0
 uvicorn[standard]==0.34.0
 gunicorn==23.0.0
 
 # Database
 sqlalchemy==2.0.36
-alembic==1.14.0
+alembic==1.18.5
 psycopg2-binary==2.9.10
 
 # Cache / Queue
@@ -20,7 +20,7 @@ pydantic==2.10.3
 pydantic-settings==2.7.0
 email-validator==2.3.0
 python-dotenv==1.0.1
-python-jose[cryptography]==3.3.0
+PyJWT[crypto]==2.13.0
 passlib[bcrypt]==1.7.4
 bcrypt==4.0.1
 
@@ -28,19 +28,13 @@ bcrypt==4.0.1
 httpx==0.28.1
 
 # Orbit mechanics
-skyfield==1.45
-sgp4==2.22
+skyfield==1.54
+sgp4==2.27
 # Constraint solver
-ortools==9.11.4210
+ortools==9.15.6755
 
 # LLM integration
-langchain==0.3.13
-langchain-openai==0.3.7
 openai==1.58.1
-
-# Data science / image processing (for Rigor, installed now)
-numpy==1.26.4
-pillow==10.4.0
 
 # Optional: model loading (Rigor)
 # onnxruntime==1.20.1

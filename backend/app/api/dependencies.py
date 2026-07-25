@@ -5,7 +5,7 @@ from typing import Annotated, Optional
 
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
-from jose import JWTError, jwt
+import jwt
 from sqlalchemy.orm import Session
 
 from app.core.config import get_settings
@@ -35,7 +35,7 @@ def get_current_user(
             algorithms=[settings.JWT_ALGORITHM],
         )
         user_id_str: Optional[str] = payload.get("sub")
-    except JWTError as exc:
+    except jwt.InvalidTokenError as exc:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Could not validate credentials",
