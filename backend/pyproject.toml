@@ -19,7 +19,7 @@ dependencies = [
     "python-dotenv==1.2.2",
     "PyJWT[crypto]==2.13.0",
     "passlib[bcrypt]==1.7.4",
-    "bcrypt==4.0.1",
+    "bcrypt==5.0.0",
     "httpx==0.28.1",
     "skyfield==1.54",
     "sgp4==2.27",
