@@ -10,7 +10,7 @@ dependencies = [
     "fastapi==0.140.0",
     "uvicorn[standard]==0.34.0",
     "gunicorn==23.0.0",
-    "sqlalchemy==2.0.36",
+    "sqlalchemy==2.0.51",
     "alembic==1.18.5",
     "psycopg2-binary==2.9.10",
     "redis==5.2.1",
