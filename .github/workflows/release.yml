@@ -37,7 +37,7 @@ jobs:
         with:
           subject-path: apex-${{ github.event.release.tag_name }}.tar.gz
           sbom-path: apex-${{ github.event.release.tag_name }}.spdx.json
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: apex-${{ github.event.release.tag_name }}-evidence
           path: |
